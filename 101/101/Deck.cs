@@ -10,11 +10,11 @@ namespace _101
     {
         private List<Card> _deck = new List<Card>();
         private int _totalDignity;
-        private int _deckSize = 0;
+        private int _size = 0;
 
-        public int DeckSize
+        public int Size
         {
-            get { return _deckSize; }
+            get { return _size; }
         }
         
         public int TotalDignity
@@ -22,7 +22,7 @@ namespace _101
             get { return _totalDignity; }
         }
 
-        public Card GetCard (int cardIndex)
+        public Card Card (int cardIndex)
         {
             return _deck[cardIndex];
         }
@@ -31,20 +31,20 @@ namespace _101
         {
             _deck.Add(card);
             _totalDignity += card.Dignity;
-            _deckSize++;
+            _size++;
         }
 
-        public void RemoveCard(int cardIndex)
+        public void RemoveCard(Card card)
         {
-            _deck.Remove(this.GetCard(cardIndex));
-            _totalDignity -= this.GetCard(cardIndex).Dignity;
-            _deckSize--;
+            _deck.Remove(card);
+            _totalDignity -= card.Dignity;
+            _size--;
         }
 
-        public void TransferCardTo(Deck anotherDeck, int cardIndex)
+        public void TransferCardTo(Deck anotherDeck, Card card)
         {
-            anotherDeck.AddCard(this.GetCard(cardIndex));
-            this.RemoveCard(cardIndex);
+            anotherDeck.AddCard(card);
+            this.RemoveCard(card);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace _101
 {
@@ -13,7 +14,6 @@ namespace _101
         private int _suit;
         private Image _backImage;
         private Image _frontImage;
-
 
         public int Dignity
         {
