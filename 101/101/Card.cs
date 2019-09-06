@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace _101
 {
-    class Card
+    public class Card
     {
         private int _dignity;
         private int _suit;
@@ -37,6 +37,18 @@ namespace _101
         {
             get { return _frontImage; }
             set { _frontImage = value; }
+        }
+
+        public bool Equals(Card other)
+        {
+            if (other != null)
+            {
+                bool _isEquals = false;
+                if (other.Dignity == this.Dignity && other.Suit == this.Suit)
+                    _isEquals = true;
+                return _isEquals;
+            }
+            else return false;
         }
     }
 }

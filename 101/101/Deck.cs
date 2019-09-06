@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _101
 {
-    class Deck
+    public class Deck
     {
         private List<Card> _deck = new List<Card>();
         private int _totalDignity;
@@ -41,10 +41,19 @@ namespace _101
             _size--;
         }
 
-        public void TransferCardTo(Deck anotherDeck, Card card)
+        public bool Contains(Card other_card)
         {
-            anotherDeck.AddCard(card);
-            this.RemoveCard(card);
+            if (other_card != null)
+            {
+                bool _isContains = false;
+                foreach (Card card in _deck)
+                {
+                    if (card.Equals(other_card))
+                        _isContains = true;
+                }
+                return _isContains;
+            }
+            else return false;
         }
     }
 }

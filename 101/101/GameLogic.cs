@@ -10,131 +10,210 @@ namespace _101
 {
     class GameLogic
     {
-        public Deck OriginalDeck = new Deck();
-        public Deck UsedCardDeck = new Deck();
-        List<Player> Players = new List<Player>();
-        public int CurrentDignity;
-        public int CurrentSuit;
+        List<Player> _players = new List<Player>();
+        readonly Deck _originalDeck = new Deck();
+        Deck _usedCardDeck = new Deck();
+        int WhoseTurn;
+        int WhoWonPreviousRound = -1;
+        public int CurrentDignity = -1;
+        public int CurrentSuit = -1;
         private int AmountOfPlayers;
-        Player WhoseTurn;
-        Player WhoWonPreviousRound = null;
-        bool IsSomeoneWonRound = false;
-        bool IsPlayerMoved = false;
-        GameLogic(List<Player> Players)
+
+        public delegate void PrepareInterface(Deck OriginalDeck, List<Player> players);
+        public delegate void ChagePlayerDeck(Player player, Deck FromOrInToDeck, bool IfFromPlayerDeck);
+        public delegate void ChangeUsedCardAndOriginalDeck(Deck OriginalDeck, Deck UsedCardDeck, bool IsFromOriginalDeck);
+        public delegate void PlayerChangeSuit();
+        public delegate void ChangeSuitImage(int suit);
+
+        public event PrepareInterface GameHasStarted;
+        public event ChagePlayerDeck CardHasMovedFromOrIntoPlayerDeck;
+        public event ChangeUsedCardAndOriginalDeck CardHasMovedFromOrIntoOriginalDeck;
+        public event PlayerChangeSuit ChangeSuitRequired;
+        public event ChangeSuitImage SuitHasChanged;
+
+        public List<Player> Players
         {
-            this.Players = Players;
-            AmountOfPlayers = Players.Count;
+            get => _players;
         }
-        void StartGame()
+        public Deck OriginalDeck
         {
-            while(IsSomeoneLoseGame())
+            get => _originalDeck;
+        }
+        public Deck UsedCardDeck
+        {
+            get => _usedCardDeck;
+        }
+        public GameLogic()
+        {
+            AmountOfPlayers = 2;            
+            Players.Add(new Player());
+            for (int i = 0; i < AmountOfPlayers - 1; i++)
             {
-                StartRound();
-                while(!IsSomeoneWonRound)
-                {
-                    ChooseCardForMove(WhoseTurn);
+                Players.Add(new Computer());
+            }
+        }
+        public void StartRound()
+        {
+            FillOriginalDeck();
+            ChooseWhoseTurn();
+            DealCards();
+            OpenFirstCard();
+        }
+        void FillOriginalDeck()
+        {
+            for (int i = 0; i < 36; i++)
+            {
+                Card card = new Card();
+                card.Dignity = i / 4 + 2;
+                if (i > 11) card.Dignity++;
+                if (card.Dignity == 9) card.Dignity = 0;
+                card.Suit = i % 4;
+                card.BackImage = Properties.Resources.back;
+                string imageName = String.Format("_{0}", i);
+                card.FrontImage = (Image)Properties.Resources.ResourceManager.GetObject(imageName);
+                _originalDeck.AddCard(card);
+            }
+            GameHasStarted(_originalDeck, _players);
+        }
+        void ChooseWhoseTurn()
+        {
+            Random random = new Random();
+            WhoseTurn = (WhoWonPreviousRound < 0) ? random.Next(AmountOfPlayers) : WhoWonPreviousRound;
+        }
+        void DealCards()
+        {
+            Random random = new Random();
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < AmountOfPlayers; j++)
+                {                   
+                    TransferCardFromInto(_originalDeck, _players[j].deck, _originalDeck.Card(random.Next(_originalDeck.Size)));
+                    CardHasMovedFromOrIntoPlayerDeck(_players[j], _originalDeck, false);
                 }
-                CountRoundResults();
             }
         }
-
-        void CountRoundResults()
+        void OpenFirstCard()
         {
-
+            Random random = new Random();
+            Card card = _players[WhoseTurn].deck.Card(random.Next(_players[WhoseTurn].deck.Size));
+            MakeMove(card);
+            CardHasMovedFromOrIntoPlayerDeck(_players[WhoseTurn], UsedCardDeck, true);
+            ComputerMove();
         }
-        void ChooseCardForMove (Player player)
+        void ComputerMove()
         {
-            Card NewLastUsedCard;
-            if ( player is Computer)
+            if (_players[WhoseTurn] is Computer)
             {
-                NewLastUsedCard = ((Computer)player).MakeMove(CurrentSuit, CurrentDignity);
-            }
-            else
-            {
-                Wait();
-            }
-        }
-
-        void MakeMove (Card card)
-        {
-            if (IsItCorrectCard(card))
-            {
-                if (card.Dignity == 9)
+                if (((Computer)_players[WhoseTurn]).DoComputerHaveSuitableCard(CurrentDignity, CurrentSuit))
                 {
-
-                }
-                else if (card.Dignity == 2)
-                {
-
+                    MakeMove(((Computer)_players[WhoseTurn]).MakeMove(CurrentDignity, CurrentSuit));
                 }
                 else
                 {
-
+                    TakeCard(_players[WhoseTurn]);
+                    PassTheMoveToTheNextPlayer();
                 }
-            }                   
+            }
         }
-
-        bool IsItCorrectCard(Card card)
+        void TransferCardFromInto(Deck FromThisDeck, Deck IntoThisDeck, Card card)
         {
-
+            FromThisDeck.RemoveCard(card);
+            IntoThisDeck.AddCard(card);
         }
-        void Wait()
+        public void PlayerTakeCard()
         {
-            Timer WaitForPlayerMove = new Timer();
-            WaitForPlayerMove.Interval = 1000;
-            WaitForPlayerMove.AutoReset = true;
-            WaitForPlayerMove.Elapsed += HavePlayerMoved;
-            WaitForPlayerMove.Start();            
-        }
-
-        void PlayerMoved()
-        {
-            IsPlayerMoved = true;
-        }
-        void HavePlayerMoved (Object source, System.Timers.ElapsedEventArgs e)
-        {
-            Timer WaitForPlayerMove = source as Timer;
-            if (IsPlayerMoved) WaitForPlayerMove.Enabled = false;           
-        }
-        void CheckSpecialCardsAndMakeMove (Player player)
-        {
-            if (CurrentDignity == 11) // любой туз
+            TakeCard(_players[WhoseTurn]);
+            if(CurrentDignity != 0)
             {
                 PassTheMoveToTheNextPlayer();
             }
-            else if (CurrentDignity == 4 && CurrentSuit == 3) // король пик
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    TakeCard(player);
-                }
-                PassTheMoveToTheNextPlayer();
-            }
-            else if (CurrentDignity == 7) // любая семерка
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    TakeCard(player);
-                }
-                PassTheMoveToTheNextPlayer();
-            }
-            else if (CurrentDignity == 6) // любая шестерка
-            {
-                TakeCard(player);
-                PassTheMoveToTheNextPlayer();
-            }
-            else
-            {
-                MakeMove(player);
-            }
+            ComputerMove();
         }
-
         void PassTheMoveToTheNextPlayer()
         {
-            int CurrentIntdexOfPlayer = Players.IndexOf(WhoseTurn);
-            WhoseTurn = (CurrentIntdexOfPlayer == Players.Count - 1) ? Players[0] : Players[CurrentIntdexOfPlayer + 1];
+            WhoseTurn++;
+            if (WhoseTurn == AmountOfPlayers) WhoseTurn = 0;
         }
-
+        public void MakeMove(Card card)
+        {
+            if (IsSuitableCard(card))
+            {
+                CurrentDignity = card.Dignity;
+                CurrentSuit = card.Suit;
+                SuitHasChanged(card.Suit);
+                TransferCardFromInto(_players[WhoseTurn].deck, _usedCardDeck, card);
+                CardHasMovedFromOrIntoPlayerDeck(_players[WhoseTurn], _usedCardDeck, true);
+                if (_players[WhoseTurn].deck.Size == 0)
+                {
+                    //CountPoints(card);
+                }
+                else
+                {
+                    if (card.Dignity != 0 && card.Dignity != 3)
+                        PassTheMoveToTheNextPlayer();
+                    if (card.Dignity == 3)
+                    {
+                        if (_players[WhoseTurn] is Computer)
+                            ChangeSuit(((Computer)_players[WhoseTurn]).ChangeSuit());
+                        else
+                            ChangeSuitRequired();
+                    }
+                    else if (card.Dignity == 11)
+                        PassTheMoveToTheNextPlayer();
+                    else if (card.Dignity == 4 && card.Suit == 3)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            TakeCard(_players[WhoseTurn]);
+                        }
+                        PassTheMoveToTheNextPlayer();
+                    }
+                    else if (card.Dignity == 7)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            TakeCard(_players[WhoseTurn]);
+                        }
+                        PassTheMoveToTheNextPlayer();
+                    }
+                    else if (card.Dignity == 6)
+                    {
+                        TakeCard(_players[WhoseTurn]);
+                        PassTheMoveToTheNextPlayer();
+                    }
+                }
+            }
+            ComputerMove();
+        }
+        void TakeCard(Player player)
+        {
+            Random random = new Random();
+            Card card = _originalDeck.Size > 1 ? _originalDeck.Card(random.Next(_originalDeck.Size)) : _originalDeck.Card(0);
+            TransferCardFromInto(_originalDeck, player.deck, card);
+            CardHasMovedFromOrIntoPlayerDeck(player, _originalDeck, false);
+            if (_originalDeck.Size == 0)
+            {
+                while (UsedCardDeck.Size > 1)
+                {
+                    TransferCardFromInto(_usedCardDeck, _originalDeck, _usedCardDeck.Card(0));
+                    CardHasMovedFromOrIntoOriginalDeck(_originalDeck, _usedCardDeck, false);
+                }
+            }
+        }
+        bool IsSuitableCard(Card card)
+        {
+            if (CurrentDignity == -1 || CurrentDignity == card.Dignity || CurrentSuit == card.Suit || card.Dignity == 3)
+                return true;
+            else
+                return false;
+        }
+        public void ChangeSuit(int Suit)
+        {
+            CurrentSuit = Suit;
+            SuitHasChanged(Suit);
+            PassTheMoveToTheNextPlayer();
+            ComputerMove();
+        }   
         bool IsSomeoneLoseGame()
         {
             bool IsSomeoneLooser = false;
@@ -144,72 +223,15 @@ namespace _101
             }
             return IsSomeoneLooser;
         }
-        void StartRound()
-        {
-            FillOriginalDeck();
-            DealCards();
-            OpenFirstCard();
-            ChooseWhoseTurn();  
-        }
 
-        void FillOriginalDeck ()
-        {
-            for (int i = 0; i < 36; i++)
-            {
-                Card card = new Card();
-                card.Dignity =  i/4  + 2;
-                if (i > 11) card.Dignity++;
-                if (card.Dignity == 9) card.Dignity = 0;
-                card.Suit = i % 4;
-                card.BackImage = Properties.Resources.back;
-                string imageName = String.Format("_{0}", i);
-                card.FrontImage = (Image)Properties.Resources.ResourceManager.GetObject(imageName);
-                OriginalDeck.AddCard(card);
-            }
-        }
-        void OpenFirstCard()
-        {
-            Random random = new Random();
-            Card card = OriginalDeck.Card(random.Next(OriginalDeck.Size - 1));
-            OriginalDeck.TransferCardTo(OriginalDeck, card);
-            CurrentDignity = card.Dignity;
-            CurrentSuit = card.Suit;
-        }
 
-        void ChooseWhoseTurn()
-        {
-            Random random = new Random();
-            WhoseTurn = (WhoWonPreviousRound == null) ? Players[random.Next(AmountOfPlayers)] : WhoWonPreviousRound;
-        }
-        public void DealCards ()
-        {
-            Random random = new Random();
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < AmountOfPlayers; j++)
-                {
-                    OriginalDeck.TransferCardTo(Players[i].deck, OriginalDeck.Card(random.Next(OriginalDeck.Size - 1)));
-                }
-            }          
-        }
-        
-        public void TakeCard(Player player)
-        {
-            if (OriginalDeck.Size == 0)
-            {
-                while (UsedCardDeck.Size > 1)
-                {
-                    UsedCardDeck.TransferCardTo(OriginalDeck, UsedCardDeck.Card(0));
-                }
-            }
-            Random random = new Random();
-            Card card = OriginalDeck.Size > 1 ? OriginalDeck.Card(random.Next(OriginalDeck.Size - 1)) : OriginalDeck.Card(0);
-            OriginalDeck.TransferCardTo(player.deck, card);
-        }
-
-        public void HitTheCard(Player player, Card card)
-        {
-            player.deck.TransferCardTo(UsedCardDeck, card);
-        }
+        /*  ToDO : Реализовать конец раунда и начало следующего
+         *  Реализовать посчет очков
+         *  Реализовать отображение имен и очков около колод игроков  
+         *  Запись рекордов
+         *  Написать правила
+         *  Таблица рекордов
+         *  Сделать  CodeReview
+         */
     }
 }

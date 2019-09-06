@@ -7,14 +7,13 @@ using System.Drawing;
 
 namespace _101
 {
-    class Player
+    public class Player
     {
         private int score;
         public Deck deck = new Deck();
-        public int deckLocationY;
         private bool _isLoose;
 
-        protected Player ()
+        public Player()
         {
             score = 0;
             _isLoose = false;
@@ -25,6 +24,7 @@ namespace _101
             get
             {
                 if (score > 101) _isLoose = true;
+                else if (score == 101) score = 0;
                 return _isLoose;
             }
         }
