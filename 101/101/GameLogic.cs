@@ -24,12 +24,16 @@ namespace _101
         public delegate void ChangeUsedCardAndOriginalDeck(Deck OriginalDeck, Deck UsedCardDeck, bool IsFromOriginalDeck);
         public delegate void PlayerChangeSuit();
         public delegate void ChangeSuitImage(int suit);
+        public delegate void EndGame(int index);
+        public delegate void ShowScore(List<Player> players);
 
         public event PrepareInterface GameHasStarted;
         public event ChagePlayerDeck CardHasMovedFromOrIntoPlayerDeck;
         public event ChangeUsedCardAndOriginalDeck CardHasMovedFromOrIntoOriginalDeck;
         public event PlayerChangeSuit ChangeSuitRequired;
         public event ChangeSuitImage SuitHasChanged;
+        public event EndGame GameHasEnded;
+        public event ShowScore ScoreHasChanged;
 
         public List<Player> Players
         {
@@ -74,6 +78,7 @@ namespace _101
                 _originalDeck.AddCard(card);
             }
             GameHasStarted(_originalDeck, _players);
+            ScoreHasChanged(_players);
         }
         void ChooseWhoseTurn()
         {
@@ -111,7 +116,7 @@ namespace _101
                 else
                 {
                     TakeCard(_players[WhoseTurn]);
-                    PassTheMoveToTheNextPlayer();
+                    if(CurrentDignity!=0)PassTheMoveToTheNextPlayer();
                 }
             }
         }
@@ -136,6 +141,7 @@ namespace _101
         }
         public void MakeMove(Card card)
         {
+
             if (IsSuitableCard(card))
             {
                 CurrentDignity = card.Dignity;
@@ -145,7 +151,7 @@ namespace _101
                 CardHasMovedFromOrIntoPlayerDeck(_players[WhoseTurn], _usedCardDeck, true);
                 if (_players[WhoseTurn].deck.Size == 0)
                 {
-                    //CountPoints(card);
+                    EndThisRound(card);
                 }
                 else
                 {
@@ -181,16 +187,19 @@ namespace _101
                         TakeCard(_players[WhoseTurn]);
                         PassTheMoveToTheNextPlayer();
                     }
+                    ComputerMove();
                 }
             }
-            ComputerMove();
         }
         void TakeCard(Player player)
         {
-            Random random = new Random();
-            Card card = _originalDeck.Size > 1 ? _originalDeck.Card(random.Next(_originalDeck.Size)) : _originalDeck.Card(0);
-            TransferCardFromInto(_originalDeck, player.deck, card);
-            CardHasMovedFromOrIntoPlayerDeck(player, _originalDeck, false);
+            if (_originalDeck.Size != 0)
+            {
+                Random random = new Random();
+                Card card = _originalDeck.Size > 1 ? _originalDeck.Card(random.Next(_originalDeck.Size)) : _originalDeck.Card(0);
+                TransferCardFromInto(_originalDeck, player.deck, card);
+                CardHasMovedFromOrIntoPlayerDeck(player, _originalDeck, false);
+            }
             if (_originalDeck.Size == 0)
             {
                 while (UsedCardDeck.Size > 1)
@@ -224,13 +233,46 @@ namespace _101
             return IsSomeoneLooser;
         }
 
+        void EndThisRound(Card card)
+        {
+            if (card.Dignity == 3)
+                _players[WhoseTurn].Score -= 20;
+            foreach(Player player in Players)
+            {
+                player.Score += player.deck.TotalDignity;
+            }
+            GameHasEnded(3);
+            WhoWonPreviousRound = WhoseTurn;
+            WhoseTurn = -1;
+            CurrentDignity = -1;
+            CurrentSuit = -1;
+            ScoreHasChanged(_players);
+        }
 
-        /*  ToDO : Реализовать конец раунда и начало следующего
-         *  Реализовать посчет очков
-         *  Реализовать отображение имен и очков около колод игроков  
-         *  Запись рекордов
+        public void RestartGame()
+        {
+            foreach(Player player in _players)
+            {
+                for (int i = 0; i < player.deck.Size;)
+                {
+                    TransferCardFromInto(player.deck, _usedCardDeck, player.deck.Card(i));
+                    CardHasMovedFromOrIntoPlayerDeck(player, _usedCardDeck, true);
+                }
+            }
+            for (int i = 0; i < _usedCardDeck.Size;)
+            {
+                TransferCardFromInto(_usedCardDeck, _originalDeck, _usedCardDeck.Card(i));
+                CardHasMovedFromOrIntoOriginalDeck(_originalDeck, _usedCardDeck, false);
+            }
+            ChooseWhoseTurn();
+            DealCards();
+            OpenFirstCard();
+        }
+        /*  ToDO :
+         *  Запись статистики
          *  Написать правила
-         *  Таблица рекордов
+         *  Статистика
+         *  сделать переход в главное меню когда кто-то набрал больше 101 и запись в статистику
          *  Сделать  CodeReview
          */
     }

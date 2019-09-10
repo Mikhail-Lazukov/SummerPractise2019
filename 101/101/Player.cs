@@ -19,6 +19,11 @@ namespace _101
             _isLoose = false;
         }
 
+        public int Score
+        {
+            get { return score; }
+            set { score = value; }
+        }
         public bool IsLoose
         {
             get

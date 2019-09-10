@@ -33,6 +33,7 @@ namespace _101
         {
             for (int i = 0; i < players.Count; i++)
             {
+
                 PlayerToDeckCoord.Add(players[i], new Point(gameField.ClientSize.Width / 5,
                                             (i % 2 == 1) ?  gameField.Height / 6 :
                                                             gameField.ClientSize.Height * 5 / 6 - PictureBoxes_Size.Height));
@@ -112,6 +113,21 @@ namespace _101
             if (CardPictureBox.Location != ToThisLocation)
             {
                 CardPictureBox.Location = ToThisLocation;               
+            }
+        }
+
+        public void UpdateScore(List<Player> players)
+        {
+            foreach(var player in players)
+            {
+                if(player is Computer)
+                {
+                    gameField.Label_Computer_Score.Text = String.Format("Счет: {0}",player.Score);
+                }
+                else
+                {
+                    gameField.Label_Player_Score.Text = String.Format("Счет: {0}", player.Score);
+                }
             }
         }
 

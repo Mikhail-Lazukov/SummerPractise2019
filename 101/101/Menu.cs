@@ -27,12 +27,21 @@ namespace _101
 
         private void Button_Rules_Click(object sender, EventArgs e)
         {
+            Label_Rules_Head.Visible = true;
+            Label_Text_Of_Rules.Visible = true;
+            Button_Close_Rules.Visible = true;
+        }
+
+        private void Button_Statistics_Click(object sender, EventArgs e)
+        {
 
         }
 
-        private void Button_Records_Click(object sender, EventArgs e)
+        private void Button_Close_Rules_Click(object sender, EventArgs e)
         {
-
+            Label_Rules_Head.Visible = false;
+            Label_Text_Of_Rules.Visible = false;
+            Button_Close_Rules.Visible = false;
         }
     }
 }

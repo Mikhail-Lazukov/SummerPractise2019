@@ -34,7 +34,9 @@ namespace _101
                 gameLogic.CardHasMovedFromOrIntoOriginalDeck += graphics.RedrawBaseDecks;
                 gameLogic.ChangeSuitRequired += PlayerChangeSuit;
                 graphics.PlayerChoseCard += gameLogic.MakeMove;
+                gameLogic.GameHasEnded += ChangeButtonName;
                 SuitHasChanged += gameLogic.ChangeSuit;
+                gameLogic.ScoreHasChanged += graphics.UpdateScore;
                 gameLogic.SuitHasChanged += UpdateCurrentSuitImage;
                 gameLogic.StartRound();
                 Player_Button.Text = "Взять";
@@ -43,9 +45,14 @@ namespace _101
             {
                 gameLogic.PlayerTakeCard();
             }
-            else if (Player_Button.Text == "Пас")
+            else if (Player_Button.Text == "Продолжить")
             {
-
+                gameLogic.RestartGame();
+                Player_Button.Text = "Взять";
+            }
+            else if(Player_Button.Text == "В главное меню")
+            {
+                this.Close();
             }
         }
 
@@ -60,14 +67,18 @@ namespace _101
                     Player_Button.Text = "Пас";
                     break;
                 case 3:
-                    Player_Button.Text = "Начать";
+                    Player_Button.Text = "Продолжить";
+                    break;
+                case 4:
+                    Player_Button.Text = "В главное меню";
                     break;
             }
 
         }
 
-        void PlayerChangeSuit()
+        private void PlayerChangeSuit()
         {
+            button_clubs.BringToFront();
             button_diamonds.Visible = true;
             button_hearts.Visible = true;
             button_spades.Visible = true;
@@ -103,5 +114,7 @@ namespace _101
                     break;
             }
         }
+
+
     }
 }

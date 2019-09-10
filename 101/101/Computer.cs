@@ -56,7 +56,10 @@ namespace _101
             }
             List<int> suits = new List<int> { suit_0, suit_1, suit_2, suit_3 };
             int suit = suits.Max();
-            return suit;
+            if (suit == suit_0) return 0;
+            else if (suit == suit_1) return 1;
+            else if (suit == suit_2) return 2;
+            else return 3;
         }
     }
 }

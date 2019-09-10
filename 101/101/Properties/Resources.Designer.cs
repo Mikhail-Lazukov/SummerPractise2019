@@ -453,9 +453,9 @@ namespace _101.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap GameTable {
+        internal static System.Drawing.Bitmap green {
             get {
-                object obj = ResourceManager.GetObject("GameTable", resourceCulture);
+                object obj = ResourceManager.GetObject("green", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
