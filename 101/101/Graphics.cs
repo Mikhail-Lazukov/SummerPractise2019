@@ -20,6 +20,7 @@ namespace _101
 
         public delegate void TryToMove(Card card);
         public event TryToMove PlayerChoseCard;
+
         public Graphics(GameField gameField)
         {
             this.gameField = gameField;
@@ -29,14 +30,13 @@ namespace _101
             UsedCardDeck_Location = new Point(gameField.ClientSize.Width / 2 + 20,
                                               gameField.ClientSize.Height / 2 - PictureBoxes_Size.Height / 2);
         }
-        public void PrepareInterface(Deck OriginalDeck, List<Player> players)
-        {
-            for (int i = 0; i < players.Count; i++)
-            {
 
-                PlayerToDeckCoord.Add(players[i], new Point(gameField.ClientSize.Width / 5,
-                                            (i % 2 == 1) ?  gameField.Height / 6 :
-                                                            gameField.ClientSize.Height * 5 / 6 - PictureBoxes_Size.Height));
+        public void PrepareInterface(Deck OriginalDeck, List<Player> Players)
+        {
+            for (int i = 0; i < Players.Count; i++)
+            {
+                PlayerToDeckCoord.Add(Players[i], new Point(gameField.ClientSize.Width / 5,
+                                            (i % 2 == 1) ?  gameField.Height / 6 : gameField.ClientSize.Height * 5 / 6 - PictureBoxes_Size.Height));
             }
             for (int i = 0; i < OriginalDeck.Size; i++)
             {
@@ -58,45 +58,45 @@ namespace _101
             }
         }
         
-        void CardPB_Click (object sender, EventArgs e)
+        private void CardPB_Click (object sender, EventArgs e)
         {
             PictureBox TempPB = sender as PictureBox;
             Card card = PictureBoxToCard[TempPB];
             PlayerChoseCard(card);
         }
 
-        public void RedrawDecks(Player player, Deck FromOrInroPlayerDeck, bool IsFromPlayerDeck) // Сделать отдельно перерисовку колоды и колоды игроков, а потом вызывать
+        public void RedrawDecks(Player player, Deck FromOrIntoPlayerDeck, bool IsFromPlayerDeck)
         {
             RedrawPlayerDeck(player);
-            RedrawOriginalOrUsedCardDeck(FromOrInroPlayerDeck, !IsFromPlayerDeck);
+            RedrawOriginalOrUsedCardDeck(FromOrIntoPlayerDeck, !IsFromPlayerDeck);
         }
 
-        public void RedrawBaseDecks(Deck OriginalDeck, Deck UsedCardDeck, bool IsFromOriginalDeck)
+        public void RedrawBaseDecks(Deck OriginalDeck, Deck UsedCardDeck)
         {
             RedrawOriginalOrUsedCardDeck(OriginalDeck, true);
             RedrawOriginalOrUsedCardDeck(UsedCardDeck, false);
         }
 
-        void RedrawPlayerDeck (Player player)
+        private void RedrawPlayerDeck (Player player)
         {
             Point PlayerDeckCoord = PlayerToDeckCoord[player];
-            int widthForPB = (player.deck.Size > 0) ? gameField.ClientSize.Width * 3 / 5 / player.deck.Size : 0;
+            int widthForPB = (player.Deck.Size > 0) ? gameField.ClientSize.Width * 3 / 5 / player.Deck.Size : 0;
             int y = PlayerDeckCoord.Y;
-            for (int i = 0; i < player.deck.Size; i++)
+            for (int i = 0; i < player.Deck.Size; i++)
             {
-                int x = ((widthForPB >= PictureBoxes_Size.Width) ? ((gameField.ClientSize.Width * 3 / 5 - player.deck.Size * PictureBoxes_Size.Width) / 2
+                int x = ((widthForPB >= PictureBoxes_Size.Width) ? ((gameField.ClientSize.Width * 3 / 5 - player.Deck.Size * PictureBoxes_Size.Width) / 2
                                                                     + i * PictureBoxes_Size.Width + PlayerDeckCoord.X) :
                                                                     (i * widthForPB + PlayerDeckCoord.X));
-                PictureBox CardPictureBox = CardToPictureBox[player.deck.Card(i)];
+                PictureBox CardPictureBox = CardToPictureBox[player.Deck.Card(i)];
                 CardPictureBox.Visible = true;
                 CardPictureBox.BringToFront();
-                CardPictureBox.Image = (player is Computer) ? player.deck.Card(i).BackImage : player.deck.Card(i).FrontImage;
+                CardPictureBox.Image = (player is Computer) ? player.Deck.Card(i).BackImage : player.Deck.Card(i).FrontImage;
                 CardPictureBox.Enabled = (player is Computer) ? false : true;
                 MovePB(CardPictureBox, new Point(x, y));
             }
         }
 
-        void RedrawOriginalOrUsedCardDeck(Deck deck, bool IsOriginalDeck)
+        private void RedrawOriginalOrUsedCardDeck(Deck deck, bool IsOriginalDeck)
         {
             for (int i = 0; i < deck.Size; i++)
             {
@@ -108,7 +108,7 @@ namespace _101
                 MovePB(CardPictureBox, (IsOriginalDeck) ? OriginalCardDeck_Location : UsedCardDeck_Location);
             }
         }
-        void MovePB(PictureBox CardPictureBox, Point ToThisLocation)
+        private void MovePB(PictureBox CardPictureBox, Point ToThisLocation)
         {
             if (CardPictureBox.Location != ToThisLocation)
             {

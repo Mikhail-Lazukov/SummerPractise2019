@@ -181,6 +181,8 @@
             this.Controls.Add(this.button_clubs);
             this.Controls.Add(this.Player_Button);
             this.DoubleBuffered = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "GameField";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "101";

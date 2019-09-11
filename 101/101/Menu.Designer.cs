@@ -135,6 +135,7 @@
             this.Controls.Add(this.Button_StartGame);
             this.Controls.Add(this.label1);
             this.DoubleBuffered = true;
+            this.MaximizeBox = false;
             this.Name = "Menu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Menu";

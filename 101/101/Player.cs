@@ -9,27 +9,33 @@ namespace _101
 {
     public class Player
     {
-        private int score;
-        public Deck deck = new Deck();
+        private int _score;
+        private Deck _deck = new Deck();
         private bool _isLoose;
 
         public Player()
         {
-            score = 0;
+            _score = 0;
             _isLoose = false;
+        }
+
+        public Deck Deck
+        {
+            get { return _deck; }
         }
 
         public int Score
         {
-            get { return score; }
-            set { score = value; }
+            get { return _score; }
+            set { _score = value; }
         }
+
         public bool IsLoose
         {
             get
             {
-                if (score > 101) _isLoose = true;
-                else if (score == 101) score = 0;
+                if (_score > 101) _isLoose = true;
+                else if (_score == 101) _score = 0;
                 return _isLoose;
             }
         }

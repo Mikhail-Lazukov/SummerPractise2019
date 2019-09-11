@@ -31,10 +31,10 @@ namespace _101
                 graphics = new Graphics(this);
                 gameLogic.GameHasStarted += graphics.PrepareInterface;
                 gameLogic.CardHasMovedFromOrIntoPlayerDeck += graphics.RedrawDecks;
-                gameLogic.CardHasMovedFromOrIntoOriginalDeck += graphics.RedrawBaseDecks;
+                gameLogic.CardHasMovedIntoOriginalDeck += graphics.RedrawBaseDecks;
                 gameLogic.ChangeSuitRequired += PlayerChangeSuit;
                 graphics.PlayerChoseCard += gameLogic.MakeMove;
-                gameLogic.GameHasEnded += ChangeButtonName;
+                gameLogic.RoundHasEnded += ChangeButtonName;
                 SuitHasChanged += gameLogic.ChangeSuit;
                 gameLogic.ScoreHasChanged += graphics.UpdateScore;
                 gameLogic.SuitHasChanged += UpdateCurrentSuitImage;
@@ -96,7 +96,7 @@ namespace _101
             button_clubs.Visible = false;
         }
 
-        void UpdateCurrentSuitImage(int suit)
+        private void UpdateCurrentSuitImage(int suit)
         {
             switch(suit)
             {

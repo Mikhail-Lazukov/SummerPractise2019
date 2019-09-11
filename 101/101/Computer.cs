@@ -11,22 +11,23 @@ namespace _101
         public bool DoComputerHaveSuitableCard(int CurrentDignity, int CurrentSuit)
         {
             bool HaveSuitableCard = false;
-            for(int i = 0; i<deck.Size && !HaveSuitableCard; i++)
+            for(int i = 0; i<Deck.Size && !HaveSuitableCard; i++)
             {
-                if (deck.Card(i).Dignity == CurrentDignity) HaveSuitableCard = true;
-                else if (deck.Card(i).Suit == CurrentSuit) HaveSuitableCard = true;
-                else if (deck.Card(i).Dignity == 3) HaveSuitableCard = true;
+                if (Deck.Card(i).Dignity == CurrentDignity) HaveSuitableCard = true;
+                else if (Deck.Card(i).Suit == CurrentSuit) HaveSuitableCard = true;
+                else if (Deck.Card(i).Dignity == 3) HaveSuitableCard = true;
             }
             return HaveSuitableCard;
         }
+
         public Card MakeMove (int CurrentDignity, int CurrentSuit)
         {
             Card card = new Card();
-            for (int i = 0; i < deck.Size; i++)
+            for (int i = 0; i < Deck.Size; i++)
             {
-                if (deck.Card(i).Dignity == CurrentDignity || deck.Card(i).Suit == CurrentSuit || deck.Card(i).Dignity == 3)
+                if (Deck.Card(i).Dignity == CurrentDignity || Deck.Card(i).Suit == CurrentSuit || Deck.Card(i).Dignity == 3)
                 {
-                    card = deck.Card(i);
+                    card = Deck.Card(i);
                     break;
                 }
             }
@@ -36,9 +37,9 @@ namespace _101
         public int ChangeSuit()
         {
             int suit_0 = 0, suit_1 = 0, suit_2 = 0, suit_3 = 0;
-            for (int i = 0; i < deck.Size; i++)
+            for (int i = 0; i < Deck.Size; i++)
             {
-                switch (deck.Card(i).Suit)
+                switch (Deck.Card(i).Suit)
                 {
                     case 0:
                         suit_0++;
