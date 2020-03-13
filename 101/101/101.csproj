@@ -47,32 +47,45 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
+    <Compile Include="Computer.cs" />
     <Compile Include="Deck.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="GameField.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="GameField.Designer.cs">
+      <DependentUpon>GameField.cs</DependentUpon>
     </Compile>
     <Compile Include="GameLogic.cs" />
+    <Compile Include="Graphics.cs" />
+    <Compile Include="Menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu.Designer.cs">
+      <DependentUpon>Menu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="GameField.resx">
+      <DependentUpon>GameField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.resx">
+      <DependentUpon>Menu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -81,6 +94,153 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\110.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\101.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\111.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\121.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CardImages\131.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GameTable.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clubs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diamonds.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hearts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\spades.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\green.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
